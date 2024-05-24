@@ -39,7 +39,7 @@ type ParenToken = LeftParenToken | RightParenToken;
 type SymbolToken = InfixOperatorToken | ParenToken | NotOperatorToken;
 
 type ConvertableToken = IdentifierToken | SymbolToken;
-type Token = EOFToken | ConvertableToken;
+export type Token = EOFToken | ConvertableToken;
 
 export const tokenize = (input: string): Token[] => {
   const tokens: Token[] = [];
@@ -96,8 +96,8 @@ const convertToSymbolToken = (head: string): ConvertResult => {
     "∧": "And",
     "∨": "Or",
     "￢": "Not",
-    "(": "LeftParen",
     "→": "Implication",
+    "(": "LeftParen",
     ")": "RightParen",
   };
 
@@ -112,7 +112,7 @@ const convertToSymbolToken = (head: string): ConvertResult => {
     token: {
       kind: tokenKind,
     },
-    seekableLength: tokenKind.length,
+    seekableLength: 1,
   };
 };
 
