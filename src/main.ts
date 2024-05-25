@@ -1,70 +1,23 @@
 import readline from "readline/promises";
-import { InfixOperatorToken, Token, tokenize } from "./tokenize";
-import { AstNode, statement } from "./parse";
-import { isValidAst } from "./evaluate";
+import { validate } from "./validate";
 
 /**
-  @returns 前提条件入力値（ConditionInput）の配列をPromiseで返します。
+  @returns 前提条件入力値（Premise Input）の配列をPromiseで返します。
 */
-const getConditionNode = async (rl: readline.Interface) => {
-  const conditionNodes: AstNode[] = [];
+const getPremiseInputs = async (rl: readline.Interface) => {
+  const inputs: string[] = [];
 
   while (true) {
     const input = await rl.question(
-      `[Condition] Input No.${conditionNodes.length + 1}: `
+      `[Premise] Input No.${inputs.length + 1}: `
     );
 
     if (input == "") break;
 
-    const tokens = tokenize(input);
-    console.log(tokens);
-
-    const parsedNode = parseTokens(tokens);
-    conditionNodes.push(parsedNode);
+    inputs.push(input);
   }
 
-  const joinedNode = joinWithInfixOperator(conditionNodes, "And");
-  return joinedNode;
-};
-
-const parseTokens = (tokens: Token[]) => {
-  try {
-    const parserState = statement(tokens);
-    return parserState.ast;
-  } catch {
-    const parenFilledTokens = fillLeftRightParen(tokens);
-    const parserState = statement(parenFilledTokens);
-    return parserState.ast;
-  }
-};
-
-const fillLeftRightParen = (tokens: Token[]): Token[] => {
-  const identifierTokens = tokens.filter((token) => token.kind == "Ident");
-  if (identifierTokens.length == 1) return tokens;
-
-  const tokensEOFTrimmed = tokens.slice(0, tokens.length - 1);
-
-  return [
-    {
-      kind: "LeftParen",
-    },
-    ...tokensEOFTrimmed,
-    { kind: "RightParen" },
-    { kind: "EOF" },
-  ];
-};
-
-const joinWithInfixOperator = (
-  nodes: AstNode[],
-  kind: InfixOperatorToken["kind"]
-): AstNode => {
-  if (nodes.length == 1) return nodes[0];
-
-  return nodes.reduce((prev, node) => ({
-    kind: kind,
-    left: prev,
-    right: node,
-  }));
+  return inputs;
 };
 
 const newLine = () => {
@@ -78,18 +31,11 @@ const main = async () => {
   });
 
   while (true) {
-    const conditionNode = await getConditionNode(rl);
-
+    const premiseInputs = await getPremiseInputs(rl);
     const analyteInput = await rl.question("[Analyte Logic] Input: ");
-    const analyteNode = statement(fillLeftRightParen(tokenize(analyteInput)));
-
-    const joinedAnalyte = joinWithInfixOperator(
-      [conditionNode, analyteNode.ast],
-      "Implication"
-    );
 
     newLine();
-    const isValidAnalyte = isValidAst(joinedAnalyte);
+    const isValidAnalyte = validate(premiseInputs, analyteInput);
 
     console.log(`The analyte is ${isValidAnalyte ? "VALID" : "INVALID"}.`);
     newLine();
