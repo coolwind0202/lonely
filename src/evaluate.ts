@@ -55,7 +55,7 @@ export const identValueCombination = (
 ): number => {
   if (identifiers.length == 0) {
     const ret = evaluate(ast, identifierValues);
-    console.log(`${ret} (when`, identifierValues, ")");
+    // console.log(`${ret} (when`, identifierValues, ")");
     return ret;
   }
 

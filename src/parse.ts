@@ -40,7 +40,7 @@ type ParserState = {
 };
 
 const log = (depth: number, content: string) => {
-  console.log(" ".repeat(depth), content);
+  // console.log(" ".repeat(depth), content);
 };
 
 export const statement = (tokens: Token[]) => {

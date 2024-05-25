@@ -1,0 +1,27 @@
+P  Q  P∧Q 
+P  Q  R  P∧(Q∧R) 
+P∧(Q∧R)  R∧P 
+P→(Q→R)  P  Q  R 
+P→(Q→R)  P  ￢R  ￢Q 
+P→(Q→R)  (P∧Q)→R 
+P→(P→Q)  P→Q 
+P∨(P∧Q)  P 
+P∨Q  P→Q  Q 
+P∨(Q∨R)  (P∨Q)∨R 
+P  ￢￢P 
+P∧￢Q  ￢(P→Q) 
+P→Q  ￢Q→￢P 
+P→￢Q  Q→￢P 
+￢P  P→Q 
+P∧￢P  Q 
+P←→(P→Q)  Q 
+(P→Q)→P  P 
+￢(P∧Q)  ￢P∨￢Q 
+￢(P→Q)  P∧￢Q 
+P∧(Q∨R)  (P∧Q)∨(P∧R) 
+(P∧Q)∨(P∧R)  P∧(Q∨R)  
+P∨(Q∧R)  (P∨Q)∧(P∨R) 
+(P∨Q)∧(P∨R) P∧(Q∨R) 
+P→(Q→R)  (P→Q)→(P→R) 
+P→R  Q→R  (P∨Q)→R 
+P←→￢P  Q 
