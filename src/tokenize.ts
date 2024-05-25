@@ -2,7 +2,7 @@ type EOFToken = {
   kind: "EOF";
 };
 
-type IdentifierToken = {
+export type IdentifierToken = {
   kind: "Ident";
   name: string;
 };
@@ -31,7 +31,7 @@ type NotOperatorToken = {
   kind: "Not";
 };
 
-type InfixOperatorToken =
+export type InfixOperatorToken =
   | AndOperatorToken
   | OrOperatorToken
   | ImplicationOperatorToken;

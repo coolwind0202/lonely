@@ -31,7 +31,7 @@ type InfixNode = OrNode | AndNode | ImplicationNode;
 type OperatorNode = InfixNode | NotNode;
 type ExpressionNode = OperatorNode | IdentifierNode;
 
-type AstNode = ExpressionNode;
+export type AstNode = ExpressionNode;
 
 type ParserState = {
   cursor: number;
@@ -49,23 +49,14 @@ export const statement = (tokens: Token[]) => {
     tokens,
     ast: {
       kind: "Ident",
-      name: "X",
+      // temporary root node
+      name: "A",
     },
   };
 
   log(0, "Statement");
 
-  const head = getHeadToken(initialState);
-  // log(initialState, JSON.stringify(head));
-  switch (head.kind) {
-    case "EOF":
-      return initialState;
-    case "LeftParen":
-    case "Ident":
-      return expression(initialState, { depth: 1 });
-    default:
-      throw new Error();
-  }
+  return expression(initialState, { depth: 1 });
 };
 
 const getHeadToken = (state: ParserState): Token => {
@@ -93,9 +84,10 @@ const group = (
 
   const afterRightExp = expression(afterOperator, { depth: depth + 1 });
   expect(afterRightExp, "RightParen");
+  const afterRightParen = nextState(afterRightExp);
 
   return {
-    ...afterRightExp,
+    ...afterRightParen,
     ast: {
       kind: operatorToken.kind,
       left: afterLeftExp.ast,
@@ -114,7 +106,7 @@ const expression = (
   switch (head.kind) {
     case "Ident":
       const afterIdent = nextState(state);
-      log(depth + 1, "Ident");
+      log(depth + 1, `Ident ${head.name}`);
       return {
         ...afterIdent,
         ast: {
@@ -146,8 +138,8 @@ const expectInfixOperator = (
   state: ParserState,
   { depth }: { depth: number }
 ) => {
-  log(depth, "Infix Operator");
   const head = getHeadToken(state);
+  log(depth, `Infix Operator ${head.kind}`);
 
   switch (head.kind) {
     case "And":
