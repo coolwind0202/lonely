@@ -16,15 +16,26 @@ const getConditionNode = async (rl: readline.Interface) => {
 
     if (input == "") break;
 
-    const tokens = fillLeftRightParen(tokenize(input));
+    const tokens = tokenize(input);
     console.log(tokens);
-    const parsedAst = statement(tokens).ast;
-    conditionNodes.push(parsedAst);
+
+    const parsedNode = parseTokens(tokens);
+    conditionNodes.push(parsedNode);
   }
 
   const joinedNode = joinWithInfixOperator(conditionNodes, "And");
-
   return joinedNode;
+};
+
+const parseTokens = (tokens: Token[]) => {
+  try {
+    const parserState = statement(tokens);
+    return parserState.ast;
+  } catch {
+    const parenFilledTokens = fillLeftRightParen(tokens);
+    const parserState = statement(parenFilledTokens);
+    return parserState.ast;
+  }
 };
 
 const fillLeftRightParen = (tokens: Token[]): Token[] => {
@@ -33,22 +44,14 @@ const fillLeftRightParen = (tokens: Token[]): Token[] => {
 
   const tokensEOFTrimmed = tokens.slice(0, tokens.length - 1);
 
-  if (
-    tokensEOFTrimmed.at(0)?.kind != "LeftParen" ||
-    tokensEOFTrimmed.at(-1)?.kind != "RightParen"
-  ) {
-    // fill parens
-    return [
-      {
-        kind: "LeftParen",
-      },
-      ...tokensEOFTrimmed,
-      { kind: "RightParen" },
-      { kind: "EOF" },
-    ];
-  }
-
-  return tokens;
+  return [
+    {
+      kind: "LeftParen",
+    },
+    ...tokensEOFTrimmed,
+    { kind: "RightParen" },
+    { kind: "EOF" },
+  ];
 };
 
 const joinWithInfixOperator = (
