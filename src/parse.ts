@@ -56,7 +56,15 @@ export const statement = (tokens: Token[]) => {
 
   log(0, "Statement");
 
-  return expression(initialState, { depth: 1 });
+  const parserState = expression(initialState, { depth: 1 });
+  if (!isAllTokensConsumed(parserState)) throw new Error();
+
+  return parserState;
+};
+
+export const isAllTokensConsumed = (state: ParserState) => {
+  const EOFTrimmedTokens = state.tokens.slice(0, -1);
+  return state.cursor == EOFTrimmedTokens.length;
 };
 
 const getHeadToken = (state: ParserState): Token => {
