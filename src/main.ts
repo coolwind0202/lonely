@@ -94,7 +94,7 @@ const main = async () => {
     console.log(`The analyte is ${isValidAnalyte ? "VALID" : "INVALID"}.`);
     newLine();
 
-    const willContinue = await rl.question("[System] Continue? (y / N):");
+    const willContinue = await rl.question("[System] Continue? (y / N): ");
     if (willContinue == "y") continue;
     else break;
   }
