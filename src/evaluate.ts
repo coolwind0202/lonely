@@ -22,8 +22,7 @@ const evaluate = (
         case "Or":
           return leftValue || rightValue;
         case "Implication":
-          if (!leftValue) return true;
-          return rightValue;
+          return !leftValue || rightValue;
       }
     case "Not":
       const negatedValue = evaluate(ast.negated, identifierValues);
