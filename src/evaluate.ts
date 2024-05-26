@@ -13,6 +13,7 @@ const evaluate = (
     case "And":
     case "Or":
     case "Implication":
+    case "Iff":
       const leftValue = evaluate(ast.left, identifierValues);
       const rightValue = evaluate(ast.right, identifierValues);
 
@@ -23,6 +24,8 @@ const evaluate = (
           return leftValue || rightValue;
         case "Implication":
           return !leftValue || rightValue;
+        case "Iff":
+          return leftValue == rightValue;
       }
     case "Not":
       const negatedValue = evaluate(ast.negated, identifierValues);
@@ -35,6 +38,7 @@ const extractIdentifierToken = (ast: AstNode): IdentifierToken[] => {
     case "Or":
     case "And":
     case "Implication":
+    case "Iff":
       return [
         ...extractIdentifierToken(ast.left),
         ...extractIdentifierToken(ast.right),

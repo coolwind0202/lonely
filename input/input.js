@@ -13,10 +13,6 @@ let i = 0;
 
 rl.on("line", (input) => {
   i++;
-  if ([17, 27].includes(i)) {
-    console.log(`(${i}) Not Computable\n`);
-    return;
-  }
 
   const expressions = input.trim().split(/\s+/);
 

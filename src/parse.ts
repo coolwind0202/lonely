@@ -17,6 +17,10 @@ type ImplicationNode = _BaseInfixNode & {
   kind: "Implication";
 };
 
+type IffNode = _BaseInfixNode & {
+  kind: "Iff";
+};
+
 type NotNode = {
   kind: "Not";
   negated: ExpressionNode;
@@ -27,7 +31,7 @@ type IdentifierNode = {
   name: string;
 };
 
-type InfixNode = OrNode | AndNode | ImplicationNode;
+type InfixNode = OrNode | AndNode | ImplicationNode | IffNode;
 type OperatorNode = InfixNode | NotNode;
 type ExpressionNode = OperatorNode | IdentifierNode;
 
@@ -153,6 +157,7 @@ const expectInfixOperator = (
     case "And":
     case "Or":
     case "Implication":
+    case "Iff":
       return head;
     default:
       throw new Error();

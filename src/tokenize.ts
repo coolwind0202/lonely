@@ -19,6 +19,10 @@ type ImplicationOperatorToken = {
   kind: "Implication";
 };
 
+type IffOperatorToken = {
+  kind: "Iff";
+};
+
 type LeftParenToken = {
   kind: "LeftParen";
 };
@@ -34,7 +38,8 @@ type NotOperatorToken = {
 export type InfixOperatorToken =
   | AndOperatorToken
   | OrOperatorToken
-  | ImplicationOperatorToken;
+  | ImplicationOperatorToken
+  | IffOperatorToken;
 type ParenToken = LeftParenToken | RightParenToken;
 type SymbolToken = InfixOperatorToken | ParenToken | NotOperatorToken;
 
@@ -86,33 +91,36 @@ const convert = (head: string): ConvertResult => {
   };
 };
 
+const symbolAndTokenKindTable = new Map<string, SymbolToken["kind"]>([
+  ["∧", "And"],
+  ["∨", "Or"],
+  ["￢", "Not"],
+  ["←→", "Iff"],
+  ["→", "Implication"],
+  ["(", "LeftParen"],
+  [")", "RightParen"],
+]);
+
 const convertToSymbolToken = (head: string): ConvertResult => {
   if (head.length == 0)
     return {
       isSucceeded: false,
     };
 
-  const symbolAndTokenKindTable: { [key: string]: SymbolToken["kind"] } = {
-    "∧": "And",
-    "∨": "Or",
-    "￢": "Not",
-    "→": "Implication",
-    "(": "LeftParen",
-    ")": "RightParen",
-  };
-
-  const tokenKind = symbolAndTokenKindTable[head[0]];
-  if (tokenKind == undefined)
-    return {
-      isSucceeded: false,
-    };
+  for (const [symbol, tokenKind] of symbolAndTokenKindTable.entries()) {
+    if (head.substring(0, symbol.length) == symbol) {
+      return {
+        isSucceeded: true,
+        token: {
+          kind: tokenKind,
+        },
+        seekableLength: symbol.length,
+      };
+    }
+  }
 
   return {
-    isSucceeded: true,
-    token: {
-      kind: tokenKind,
-    },
-    seekableLength: 1,
+    isSucceeded: false,
   };
 };
 
