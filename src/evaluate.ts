@@ -3,8 +3,8 @@ import { IdentifierToken, Token } from "./tokenize";
 
 const evaluate = (
   ast: AstNode,
-  identifierValues: Map<string, number>
-): number => {
+  identifierValues: Map<string, boolean>
+): boolean => {
   switch (ast.kind) {
     case "Ident":
       const value = identifierValues.get(ast.name);
@@ -18,17 +18,16 @@ const evaluate = (
 
       switch (ast.kind) {
         case "And":
-          return leftValue & rightValue;
+          return leftValue && rightValue;
         case "Or":
-          return leftValue | rightValue;
+          return leftValue || rightValue;
         case "Implication":
-          if (leftValue == 0) return 1;
+          if (!leftValue) return true;
           return rightValue;
       }
     case "Not":
       const negatedValue = evaluate(ast.negated, identifierValues);
-
-      return Number(!negatedValue);
+      return !negatedValue;
   }
 };
 
@@ -51,8 +50,8 @@ const extractIdentifierToken = (ast: AstNode): IdentifierToken[] => {
 export const identValueCombination = (
   ast: AstNode,
   identifiers: string[],
-  identifierValues: Map<string, number>
-): number => {
+  identifierValues: Map<string, boolean>
+): boolean => {
   if (identifiers.length == 0) {
     const ret = evaluate(ast, identifierValues);
     // console.log(`${ret} (when`, identifierValues, ")");
@@ -64,13 +63,13 @@ export const identValueCombination = (
     throw new Error();
   }
 
-  identifierValues.set(identifierName, 0);
+  identifierValues.set(identifierName, false);
   const ifZero = identValueCombination(ast, rest, identifierValues);
 
-  identifierValues.set(identifierName, 1);
+  identifierValues.set(identifierName, true);
   const ifOne = identValueCombination(ast, rest, identifierValues);
 
-  return ifOne & ifZero;
+  return ifOne && ifZero;
 };
 
 export const isValidAst = (ast: AstNode) => {
@@ -79,5 +78,5 @@ export const isValidAst = (ast: AstNode) => {
   );
   const isValid = identValueCombination(ast, identifierNames, new Map());
 
-  return isValid == 1;
+  return isValid;
 };
